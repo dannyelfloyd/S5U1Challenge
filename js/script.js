@@ -16,6 +16,7 @@ function obtenerDatosAPI () {
             id, name, username, phone, email, company, address
         });
       })
+      mostrarDetallesDOM ();
     })
     .catch((error) => {
         console.error('Error: ', error.message)
@@ -40,7 +41,6 @@ function crearUsuario ({id, name, username, phone, email, company, address}) {
     }
     usuarios.push(usuario);
     console.log('copiaUsuarios:',usuarios);
-    mostrarDetallesDOM ();
 };
 
 function agregarEdad () {
