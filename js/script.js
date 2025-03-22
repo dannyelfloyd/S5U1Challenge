@@ -40,7 +40,6 @@ function crearUsuario ({id, name, username, phone, email, company, address}) {
         address: `${address.street}, ${address.suite}, ${address.city}`
     }
     usuarios.push(usuario);
-    console.log('copiaUsuarios:',usuarios);
 };
 
 function agregarEdad () {
@@ -53,14 +52,18 @@ function mostrarDetallesDOM () {
     usuarios.forEach((usuario) => {
         listaUsuarios.innerHTML += 
             `<li>
-            <p>Nombre: ${usuario.name}</p>
-            <p>Edad: ${usuario.age}</p>
-            <p>Username: ${usuario.username}</p>
-            <p>Teléfono: ${usuario.phone}</p>
-            <p>Email: ${usuario.email}</p>
+            <div class="info">
+                <p>Nombre: ${usuario.name}</p>
+                <p>Edad: ${usuario.age}</p>
+                <p>Username: ${usuario.username}</p>
+                <p>Teléfono: ${usuario.phone}</p>
+                <p>Email: ${usuario.email}</p>
+            </div>
             <img src="${usuario.img}" alt="Imagen de ${usuario.name}">
-            <p>Compañía: ${usuario.company}</p>
-            <p>Dirección: ${usuario.address}</p>
+            <div class="plus">
+                <p>Compañía: ${usuario.company}</p>
+                <p>Dirección: ${usuario.address}</p>
+            </div>
             </li>`;
     });
 };
