@@ -1,69 +1,53 @@
 const listaUsuarios = document.getElementById('listaUsuarios');
 const usuarios = [];
+const ENDPOINT = 'https://jsonplaceholder.typicode.com/users';
+const MIN = 18;
+const MAX = 65;
+const edadAleatoria = (() => Math.floor(Math.random() * (MAX - MIN + 1) + MIN));
 
 function obtenerDatosAPI () {
-    fetch('https://jsonplaceholder.typicode.com/users')
+    return fetch(ENDPOINT)
     .then((response) => {
       if (!response.ok) {
-        throw new Error('La solicitud no fue existosa');
+        throw new Error(`Error: ${response.status}`);
       }
       return response.json();
     })
-    .then((data) => {
-      data.forEach((usuario) => {
-        const {id, name, username, phone, email, company, address} = usuario;
-        crearUsuario({
-            id, name, username, phone, email, company, address
-        });
-      })
-      mostrarDetallesDOM ();
-    })
-    .catch((error) => {
-        console.error('Error: ', error.message)
-    }); 
-};
-obtenerDatosAPI ();
-
-function crearUsuario ({id, name, username, phone, email, company, address}) {
-    const usuarioBasico = {
-        id,
-        name,
-        username, 
-        phone, 
-        email, 
-        company: company.name,
-    };
-    const usuario = {
-        ...usuarioBasico,
-        age: agregarEdad (),
-        img: `./assets/img/${id}.jpeg`,
-        address: `${address.street}, ${address.suite}, ${address.city}`
-    }
-    usuarios.push(usuario);
 };
 
-function agregarEdad () {
-    let max = 50;
-    let min = 20;
-    return  Math.floor(Math.random() * (max - min + 1) + min);;
-};
+obtenerDatosAPI ()
+.then(data => {
+    const resultado = data.map((usuario) => {
+        const {id} = usuario;
+        const {street, suite, city} = usuario.address;
+        const newUsuario = {
+            ...usuario,
+            age: edadAleatoria(),
+            img: `../assets/img/${id}.jpeg`,
+            address: `${street}, ${suite}, ${city}`
+        }
+        const {name, age, username, phone, email, img, company, address} = newUsuario;
+        return mostrarDetallesDOM (name, age, username, phone, email, img, company, address);
+    })  
+    listaUsuarios.innerHTML = resultado.join('')
+})
+.catch((error) => {console.error('Error: ', error.message)});;
 
-function mostrarDetallesDOM () {
-    usuarios.forEach((usuario) => {
-        listaUsuarios.innerHTML += 
-            `<li>
+function mostrarDetallesDOM (name, age, username, phone, email, img, company, address) {
+    return `
+        <li>
             <div class="info">
-                <p>Nombre: ${usuario.name}</p>
-                <p>Edad: ${usuario.age}</p>
-                <p>Username: ${usuario.username}</p>
-                <p>Teléfono: ${usuario.phone}</p>
-                <p>Email: ${usuario.email}</p>
+                <p>Nombre: ${name}</p>
+                <p>Edad: ${age}</p>
+                <p>Username: ${username}</p>
+                <p>Teléfono: ${phone}</p>
+                <p>Email: ${email}</p>
             </div>
-            <img src="${usuario.img}" alt="Imagen de ${usuario.name}">
+            <img src="${img}" alt="Imagen de ${name}">
             <div class="plus">
-                <p>Compañía: ${usuario.company}</p>
-                <p>Dirección: ${usuario.address}</p>
+                <p>Compañía: ${company}</p>
+                <p>Dirección: ${address}</p>
             </div>
-            </li>`;
-    });
+        </li>
+    `;
 };
